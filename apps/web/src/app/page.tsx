@@ -1,9 +1,20 @@
 import Image from "next/image";
+import { C } from "./c";
 
-export default function Home() {
+export default async function Home() {
+  const response = await fetch("http://localhost:4000", {
+    method: "GET",
+    headers: {
+      "Content-Type": "html/text",
+    },
+  });
+  const d = await response.text();
+  console.log('Res', d);
+
   return (
     <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
       <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
+        <C />
         <Image
           className="dark:invert"
           src="/next.svg"
