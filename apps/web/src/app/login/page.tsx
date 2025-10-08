@@ -20,8 +20,8 @@ export default function Login() {
       });
       if (!res.ok) throw new Error('Login failed');
       window.location.href = '/';
-    } catch (e:any) {
-      setError(e.message);
+    } catch (e: unknown | Error) {
+      if (e instanceof Error) setError(e.message);
     }
   }
 

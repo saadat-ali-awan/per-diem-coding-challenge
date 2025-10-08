@@ -14,6 +14,8 @@ async function bootstrap() {
       origin: string | undefined,
       callback: (err: Error | null, allow?: boolean) => void,
     ): void => {
+      console.log('Origin:', origin);
+
       // Allow requests with no origin (like curl or Postman)
       if (!origin) {
         callback(null, true);
@@ -23,12 +25,20 @@ async function bootstrap() {
       const allowedPatterns = [
         /^https?:\/\/([^.]+\.)?abc\.com$/,
         /^https?:\/\/localhost:\d+$/,
+        /^https?:\/\/127\.0\.0\.1:\d+$/,
         /^https?:\/\/([^.]+\.)?localhost(:\d+)?$/,
+        /^https?:\/\/api(:\d+)?$/,
+        /^https?:\/\/web(:\d+)?$/,
+        /^https?:\/\/next_web(:\d+)?$/,
       ];
 
       const allowed =
         allowedPatterns.some((pattern) => pattern.test(origin)) ||
-        ['http://localhost:3000', 'http://localhost:4000'].includes(origin);
+        [
+          'http://localhost:3000',
+          'http://localhost:4000',
+          'http://next_web_dev:3000',
+        ].includes(origin);
 
       if (allowed) {
         callback(null, true);

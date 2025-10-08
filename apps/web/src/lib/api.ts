@@ -1,4 +1,4 @@
-import 'server-only';
+'use server';
 import { getTenant } from './tenant';
 
 export async function fetchStore() {
@@ -9,5 +9,10 @@ export async function fetchStore() {
     cache: 'no-store',
   });
   if (!res.ok) throw new Error('Failed store fetch');
-  return res.json() as Promise<{ id: string; subDomain: string; name: string; welcome?: string; theme: any }>;
+  return res.json() as Promise<{ id: string; subDomain: string; name: string; welcome?: string; theme: {
+      primary: string;
+      background: string;
+      fontFamily: string;
+    }
+  }>;
 }

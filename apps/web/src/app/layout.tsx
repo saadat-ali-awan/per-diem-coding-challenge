@@ -8,11 +8,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   let store: Awaited<ReturnType<typeof fetchStore>> | null = null;
   try { store = await fetchStore(); } catch { /* show neutral fallback */ }
 
-  const theme = store?.theme || {};
+  const theme = store?.theme;
   const style = {
-    '--color-primary': theme.primary ?? '#3b82f6',
-    '--color-bg':      theme.background ?? '#ffffff',
-    '--font-family':   theme.fontFamily ?? 'Inter, system-ui',
+    '--color-primary': theme?.primary ?? '#3b82f6',
+    '--color-bg':      theme?.background ?? '#ffffff',
+    '--font-family':   theme?.fontFamily ?? 'Inter, system-ui',
   } as React.CSSProperties;
 
   return (
