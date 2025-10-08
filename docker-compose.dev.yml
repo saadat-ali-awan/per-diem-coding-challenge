@@ -33,6 +33,8 @@ services:
       sh -c "
       apk add --no-cache bash git python3 make g++ &&
       npm install &&
+      npx prisma migrate deploy &&
+      npx prisma generate &&
       npm run start:dev
       "
 

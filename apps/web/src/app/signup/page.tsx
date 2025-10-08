@@ -26,7 +26,7 @@ export default function Login() {
   }
 
   return (
-    <main className="max-w-md mx-auto p-6">
+    <main className="max-w-md mx-auto p-6 text-black">
       <h1 className="text-2xl font-semibold mb-4">Sign Up</h1>
       <form onSubmit={submit} className="space-y-3">
         <input className="border p-2 w-full" placeholder="Email" value={email} onChange={e=>setEmail(e.target.value)} />

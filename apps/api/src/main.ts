@@ -14,8 +14,6 @@ async function bootstrap() {
       origin: string | undefined,
       callback: (err: Error | null, allow?: boolean) => void,
     ): void => {
-      console.log('Origin:', origin);
-
       // Allow requests with no origin (like curl or Postman)
       if (!origin) {
         callback(null, true);
