@@ -32,7 +32,7 @@ Each app has its **own** `.env` file.
 ### apps/web/.env (example)
 
 ```env
-NEXT_PUBLIC_API_URL=http://localhost:4000
+NEXT_PUBLIC_API_URL=http://api:4000
 ```
 
 ### apps/api/.env (example)

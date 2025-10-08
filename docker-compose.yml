@@ -8,38 +8,59 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: perDiem
-    expose:
-    - "5433"
-    ports:
-      - '5433:5433'
+    command: -p 5433
     volumes:
       - pgdata:/var/lib/postgresql/data
-    command: -p 5433
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -p 5433"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
 
   api:
     build:
       context: .
       dockerfile: ./apps/api/Dockerfile
     container_name: nest_api
+    working_dir: /app
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      DATABASE_URL: postgres://postgres:postgres@postgres:5433/perDiem
+    depends_on:
+      postgres:
+        condition: service_healthy
     ports:
       - '4000:4000'
-    env_file:
-      - ./apps/api/.env
-    depends_on:
-      - postgres
-
+    command: >
+      sh -c "
+      npx prisma migrate deploy &&
+      node dist/src/main.js
+      "
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:4000 || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
 
   web:
     build:
       context: .
       dockerfile: ./apps/web/Dockerfile
     container_name: next_web
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      HOSTNAME: 0.0.0.0
+      NEXT_PUBLIC_API_URL: http://api:4000
+    depends_on:
+      api:
+        condition: service_healthy
     ports:
       - '3000:3000'
-    env_file:
-      - ./apps/web/.env
-    depends_on:
-      - api
+    restart: unless-stopped
 
 volumes:
   pgdata:
