@@ -54,12 +54,11 @@ export class AuthController {
   }
 }
 
-// Helpers
 function cookieOptions({ domain }: { domain?: string }) {
   return {
     httpOnly: true,
     sameSite: 'lax' as const,
-    secure: !!process.env.COOKIE_SECURE, // set in prod
+    secure: !!process.env.COOKIE_SECURE,
     ...(domain ? { domain } : {}),
     path: '/',
     maxAge: 60 * 60 * 24 * 7,
@@ -68,8 +67,6 @@ function cookieOptions({ domain }: { domain?: string }) {
 
 function setAuthCookie(res: Response, token: string, tenant: string) {
   const host = process.env.PUBLIC_HOST ?? 'localhost';
-  // Dev (a.localhost): cookie domain must be "localhost" (subdomain cookies on localhost are tricky).
-  // For prod (a.example.com) you'd use ".example.com" to share across subdomains or "a.example.com" to isolate.
   const isLocal = host === 'localhost';
   const domain = isLocal ? undefined : `${tenant}.${host}`;
   res.cookie('auth', token, cookieOptions({ domain }));
