@@ -1,24 +1,20 @@
 'use client';
+import { signUp } from '@/lib/api';
 import { useState } from 'react';
 
 export default function Login() {
   const [email, setEmail] = useState(''); 
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string| null>(null);
-  const api = process.env.NEXT_PUBLIC_API_URL!;
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
     const tenant = document.cookie.split('; ').find(x=>x.startsWith('tenant='))?.split('=')[1];
     try {
-      const res = await fetch(`${api}/auth/signup`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...(tenant ? { 'x-tenant': tenant } : {}) },
-        credentials: 'include',
-        body: JSON.stringify({ email, password }),
-      });
-      if (!res.ok) throw new Error('Signup failed');
+      if (!tenant) throw new Error('Tenant not found');
+      const res = await signUp(tenant, email, password);
+      if (!res.success) throw new Error('Signup failed');
       window.location.href = '/';
     } catch (e: unknown | Error) {
       if (e instanceof Error) setError(e.message);

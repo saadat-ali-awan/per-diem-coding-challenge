@@ -1,45 +1,40 @@
-'use client';
+"use client";
 
-import { redirect } from 'next/navigation';
-import { useState } from 'react';
+import { createStore } from "@/lib/api";
+import { useState } from "react";
 
 export default function CreateStorePage() {
-  const [subDomain, setSubDomain] = useState('');
-  const [name, setName] = useState('');
-  const [welcome, setWelcome] = useState('');
-  const [primary, setPrimary] = useState('#2563eb');
-  const [background, setBackground] = useState('#ffffff');
-  const [fontFamily, setFontFamily] = useState('Inter');
+  const [subDomain, setSubDomain] = useState("");
+  const [name, setName] = useState("");
+  const [welcome, setWelcome] = useState("");
+  const [primary, setPrimary] = useState("#2563eb");
+  const [background, setBackground] = useState("#ffffff");
+  const [fontFamily, setFontFamily] = useState("Inter");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setMessage('');
+    setMessage("");
 
     try {
-      const res = await fetch('http://localhost:4000/store', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          subDomain,
-          name,
-          welcome,
-          primary,
-          background,
-          fontFamily,
-        }),
-      });
+      const res = await createStore(
+        subDomain,
+        name,
+        welcome,
+        primary,
+        background,
+        fontFamily
+      );
 
-      if (res.ok) {
-        setMessage('✅ Store created successfully!');
+      if (res.success) {
+        setMessage("✅ Store created successfully!");
       } else {
-        const data = await res.json();
-        setMessage(`❌ Error: ${data.message || 'Failed to create store'}`);
+        setMessage(`❌ Error: ${res.message || "Failed to create store"}`);
       }
     } catch {
-      setMessage('❌ Network error. Check if the API is running.');
+      setMessage("❌ Network error. Check if the API is running.");
     } finally {
       setLoading(false);
     }
@@ -137,7 +132,7 @@ export default function CreateStorePage() {
           disabled={loading}
           className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg font-medium"
         >
-          {loading ? 'Creating...' : 'Create Store'}
+          {loading ? "Creating..." : "Create Store"}
         </button>
 
         {message && (

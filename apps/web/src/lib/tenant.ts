@@ -1,4 +1,4 @@
-import 'server-only';
+'use server';
 import { cookies, headers } from 'next/headers';
 
 export async function getTenant() {
