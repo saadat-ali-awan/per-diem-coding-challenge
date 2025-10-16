@@ -44,7 +44,7 @@ export default async function RootLayout({
     <html lang="en">
       <body style={style}>
         <div
-          className="min-h-screen flex flex-col items-center justify-center"
+          className="min-h-screen"
           style={{
             background: 'var(--color-bg)',
             fontFamily: 'var(--font-family)',
@@ -53,7 +53,7 @@ export default async function RootLayout({
           {shouldShowChildren ? (
             children
           ) : !isSubdomain ? (
-            <div className="text-center space-y-4">
+            <div className="text-center space-y-4 min-h-screen flex justify-center items-center">
               <Link
                 href="/create-store"
                 className="inline-block px-6 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition"
