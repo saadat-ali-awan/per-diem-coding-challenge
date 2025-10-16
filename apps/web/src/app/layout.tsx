@@ -2,12 +2,26 @@ import './globals.css';
 import { fetchStore } from '@/lib/api';
 import NotFound from './not-found';
 import { headers } from 'next/headers';
+import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const headersList = await headers();
-  const pathname = headersList.get('x-invoke-path') || headersList.get('x-pathname') || headersList.get( "referer") || ''; // works in most cases
+  const pathname =
+    headersList.get('x-invoke-path') ||
+    headersList.get('x-pathname') ||
+    headersList.get('referer') ||
+    '';
+
+  const host = headersList.get('host') || '';
+  const isSubdomain =
+    host.split('.').length > 2 && !host.includes('localhost'); // e.g., store.myapp.com
+
   const isCreateStoreRoute = pathname.includes('/create-store');
 
   let store: Awaited<ReturnType<typeof fetchStore>> | null = null;
@@ -30,7 +44,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html lang="en">
       <body style={style}>
         <div
-          className="min-h-screen"
+          className="min-h-screen flex flex-col items-center justify-center"
           style={{
             background: 'var(--color-bg)',
             fontFamily: 'var(--font-family)',
@@ -38,6 +52,15 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         >
           {shouldShowChildren ? (
             children
+          ) : !isSubdomain ? (
+            <div className="text-center space-y-4">
+              <Link
+                href="/create-store"
+                className="inline-block px-6 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition"
+              >
+                Create Your Store
+              </Link>
+            </div>
           ) : (
             <NotFound issue="Store Not Found" relatedTo="store" />
           )}
